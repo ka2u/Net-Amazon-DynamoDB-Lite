@@ -257,6 +257,19 @@ sub delete_table {
     my $res = $self->ua->request($req);
 }
 
+sub describe_table {
+    my ($self, $table) = @_;
+
+    my $content = {
+        TableName => $table,
+    };
+
+    my $req = $self->make_request('DescribeTable', $content);
+    my $res = $self->ua->request($req);
+    my $decoded = $self->json->decode($res->content);
+    return $decoded->{Table};
+}
+
 sub _type_for_value {
     my $v = shift;
     if(my $ref = reftype($v)) {
