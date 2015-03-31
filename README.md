@@ -19,4 +19,4 @@ it under the same terms as Perl itself.
 
 # AUTHOR
 
-Kazuhiro Shibuya <shibuya@fout.jp>
+Kazuhiro Shibuya <stevenlabs at gmail.com>
