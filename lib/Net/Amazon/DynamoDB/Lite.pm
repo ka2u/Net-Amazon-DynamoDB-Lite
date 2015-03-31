@@ -199,6 +199,22 @@ sub update_item {
     my $res = $self->ua->request($req);
 }
 
+sub delete_item {
+    my ($self, $table, $fields) = @_;
+
+    my $content = {
+        TableName => $table,
+    };
+
+    foreach my $k (keys %{$fields}) {
+        my $v = $fields->{$k};
+        $content->{Key}->{$k} = { _type_and_value($v) };
+    }
+
+    my $req = $self->make_request('DeleteItem', $content);
+    my $res = $self->ua->request($req);
+}
+
 sub _type_for_value {
     my $v = shift;
     if(my $ref = reftype($v)) {
