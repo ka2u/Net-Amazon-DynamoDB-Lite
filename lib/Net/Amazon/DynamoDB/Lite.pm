@@ -246,6 +246,17 @@ sub create_table {
     my $res = $self->ua->request($req);
 }
 
+sub delete_table {
+    my ($self, $table) = @_;
+
+    my $content = {
+        TableName => $table,
+    };
+
+    my $req = $self->make_request('DeleteTable', $content);
+    my $res = $self->ua->request($req);
+}
+
 sub _type_for_value {
     my $v = shift;
     if(my $ref = reftype($v)) {
