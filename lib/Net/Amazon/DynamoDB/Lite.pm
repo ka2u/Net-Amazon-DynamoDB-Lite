@@ -138,7 +138,7 @@ sub list_tables {
     my $req = $self->make_request('ListTables', $content);
     my $res = $self->ua->request($req);
     my $decoded = $self->json->decode($res->content);
-    $decoded->{TableNames};
+    return $decoded->{TableNames};
 }
 
 sub put_item {
