@@ -175,6 +175,30 @@ sub get_item {
     return $decoded->{Item};
 }
 
+sub update_item {
+    my ($self, $table, $key, $fields, $action) = @_;
+
+    my $content = {
+        TableName => $table,
+    };
+
+    foreach my $k (keys %{$key}) {
+        my $v = $key->{$k};
+        $content->{Key}->{$k} = { _type_and_value($v) };
+    }
+
+    foreach my $k (keys %{$fields}) {
+        my $v = $fields->{$k};
+        $content->{AttributeUpdates}->{$k} = {
+            Action => $action || 'PUT',
+            Value => { _type_and_value($v) }
+        };
+    }
+
+    my $req = $self->make_request('UpdateItem', $content);
+    my $res = $self->ua->request($req);
+}
+
 sub _type_for_value {
     my $v = shift;
     if(my $ref = reftype($v)) {
