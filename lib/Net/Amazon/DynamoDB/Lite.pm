@@ -215,6 +215,37 @@ sub delete_item {
     my $res = $self->ua->request($req);
 }
 
+sub create_table {
+    my ($self, $table, $read_capacity, $write_capacity, $primary, $attributes) = @_;
+
+    my $content = {
+        TableName => $table,
+        ProvisionedThroughput => {
+            ReadCapacityUnits => $read_capacity || 5,
+            WriteCapacityUnits => $write_capacity || 5,
+        }
+    };
+
+    foreach my $k (keys %{$attributes}) {
+        my $type = $attributes->{$k};
+        push @{$content->{AttributeDefinitions}}, {
+            AttributeName => $k,
+            AttributeType => $type,
+        };
+    }
+
+    foreach my $k (keys %{$primary}) {
+        my $type = $primary->{$k};
+        push @{$content->{KeySchema}}, {
+            AttributeName => $k,
+            KeyType => $type,
+        };
+    }
+
+    my $req = $self->make_request('CreateTable', $content);
+    my $res = $self->ua->request($req);
+}
+
 sub _type_for_value {
     my $v = shift;
     if(my $ref = reftype($v)) {
