@@ -329,6 +329,23 @@ sub scan {
     my $res = $self->ua->request($req);
 }
 
+sub batch_get_item {
+    my ($self, $request_items) = @_;
+
+    my $content;
+    foreach my $k (keys %{$request_items}) {
+        my $v = $request_items->{$k};
+        foreach my $l (@{$v}) {
+            my ($key) = keys %{$l};
+            push @{$content->{RequestItems}->{$k}->{Keys}},
+              { $key => {_type_and_value($l->{$key})} };
+        }
+    }
+
+    my $req = $self->make_request('BatchGetItem', $content);
+    my $res = $self->ua->request($req);
+}
+
 sub _type_for_value {
     my $v = shift;
     if(my $ref = reftype($v)) {
