@@ -312,6 +312,23 @@ sub query {
     my $res = $self->ua->request($req);
 }
 
+sub scan {
+    my ($self, $table, $filter_expressions, $expression_attribute_values) = @_;
+
+    my $content = {
+        TableName => $table,
+        FilterExpression => $filter_expressions,
+    };
+
+    foreach my $k (keys %{$expression_attribute_values}) {
+        my $v = $expression_attribute_values->{$k};
+        $content->{ExpressionAttributeValues} = { $k => {_type_and_value($v)} };
+    }
+
+    my $req = $self->make_request('Scan', $content);
+    my $res = $self->ua->request($req);
+}
+
 sub _type_for_value {
     my $v = shift;
     if(my $ref = reftype($v)) {
