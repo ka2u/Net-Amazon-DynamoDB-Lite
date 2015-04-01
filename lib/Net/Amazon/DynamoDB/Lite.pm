@@ -346,6 +346,36 @@ sub batch_get_item {
     my $res = $self->ua->request($req);
 }
 
+sub batch_write_item {
+    my ($self, $mode, $request_items) = @_;
+
+    my $content;
+    if ($mode eq 'PUT') {
+        foreach my $k (keys %{$request_items}) {
+            my $v = $request_items->{$k};
+            my $put;
+            foreach my $l (@{$v}) {
+                my ($key) = keys %{$l};
+                $put->{PutRequest}->{Item}->{$key} = {_type_and_value($l->{$key})};
+            }
+            push @{$content->{RequestItems}->{$k}}, $put;
+        }
+    } elsif ($mode eq 'DELETE') {
+        foreach my $k (keys %{$request_items}) {
+            my $v = $request_items->{$k};
+            my $delete;
+            foreach my $l (@{$v}) {
+                my ($key) = keys %{$l};
+                $delete->{DeleteRequest}->{Key}->{$key} = {_type_and_value($l->{$key})};
+            }
+            push @{$content->{RequestItems}->{$k}}, $delete;
+        }
+    }
+
+    my $req = $self->make_request('BatchWriteItem', $content);
+    my $res = $self->ua->request($req);
+}
+
 sub _type_for_value {
     my $v = shift;
     if(my $ref = reftype($v)) {
