@@ -293,6 +293,25 @@ sub update_table {
     my $res = $self->ua->request($req);
 }
 
+sub query {
+    my ($self, $table, $query, $comparison_operator) = @_;
+
+    my $content = {
+        TableName => $table,
+    };
+
+    foreach my $k (keys %{$query}) {
+        my $v = $query->{$k};
+        push @{$content->{KeyConditions}->{$k}->{AttributeValueList}}, {
+            _type_and_value($v)
+        };
+        $content->{KeyConditions}->{$k}->{ComparisonOperator} = $comparison_operator;
+    }
+
+    my $req = $self->make_request('Query', $content);
+    my $res = $self->ua->request($req);
+}
+
 sub _type_for_value {
     my $v = shift;
     if(my $ref = reftype($v)) {
