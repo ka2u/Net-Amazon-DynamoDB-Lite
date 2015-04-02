@@ -12,5 +12,6 @@ my $dynamo = Net::Amazon::DynamoDB::Lite->new(
 my $time = strftime('%Y%m%d', gmtime);
 is $dynamo->scope, "$time/ap-northeast-1/dynamodb/aws4_request";
 is ref $dynamo->signature, 'WebService::Amazon::Signature::v4';
+is $dynamo->uri, "https://dynamodb.ap-northeast-1.amazonaws.com/";
 
 done_testing;
