@@ -16,7 +16,6 @@ ok $req->header("x-amz-date");
 is $req->header("x-amz-target"), "DynamoDB_20120810.ListTables";
 is $req->header("content-type"), "application/x-amz-json-1.0";
 is $req->header("Content-Length"), length '{"Limit":10}';
-warn $dynamo->signature->calculate_signature;
 like $req->header("Authorization"), qr#^AWS4-HMAC-SHA256 Credential=XXXXXXXXXXXXXXXXX/\d{8}/ap-northeast-1/dynamodb/aws4_request, SignedHeaders=content-length;content-type;date;host;x-amz-date;x-amz-target, Signature=.+$#;
 is $req->content, '{"Limit":10}';
 
