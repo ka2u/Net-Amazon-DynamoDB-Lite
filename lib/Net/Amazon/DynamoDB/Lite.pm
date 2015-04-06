@@ -5,6 +5,7 @@ use warnings;
 
 our $VERSION = "0.01";
 
+use Carp;
 use Furl;
 use HTTP::Request;
 use JSON;
@@ -137,7 +138,11 @@ sub list_tables {
     };
     my $req = $self->make_request('ListTables', $content);
     my $res = $self->ua->request($req);
-    my $decoded = $self->json->decode($res->content);
+    my $decoded;
+    eval {
+        $decoded = $self->json->decode($res->content);
+    };
+    Carp::croak $res->content if $@;
     return $decoded->{TableNames};
 }
 
@@ -155,6 +160,11 @@ sub put_item {
 
     my $req = $self->make_request('PutItem', $content);
     my $res = $self->ua->request($req);
+    if ($res->is_success) {
+        return 1;
+    } else {
+        Carp::croak $res->content;
+    }
 }
 
 sub get_item {
@@ -171,8 +181,12 @@ sub get_item {
 
     my $req = $self->make_request('GetItem', $content);
     my $res = $self->ua->request($req);
-    my $decoded = $self->json->decode($res->content);
-    return $decoded->{Item};
+    my $decoded;
+    eval {
+        $decoded = $self->json->decode($res->content);
+    };
+    Carp::croak $res->content if $@;
+    return _except_type($decoded->{Item});
 }
 
 sub update_item {
@@ -197,6 +211,11 @@ sub update_item {
 
     my $req = $self->make_request('UpdateItem', $content);
     my $res = $self->ua->request($req);
+    if ($res->is_success) {
+        return 1;
+    } else {
+        Carp::croak $res->content;
+    }
 }
 
 sub delete_item {
@@ -213,6 +232,11 @@ sub delete_item {
 
     my $req = $self->make_request('DeleteItem', $content);
     my $res = $self->ua->request($req);
+    if ($res->is_success) {
+        return 1;
+    } else {
+        Carp::croak $res->content;
+    }
 }
 
 sub create_table {
@@ -244,6 +268,11 @@ sub create_table {
 
     my $req = $self->make_request('CreateTable', $content);
     my $res = $self->ua->request($req);
+    if ($res->is_success) {
+        return 1;
+    } else {
+        Carp::croak $res->content;
+    }
 }
 
 sub delete_table {
@@ -255,6 +284,11 @@ sub delete_table {
 
     my $req = $self->make_request('DeleteTable', $content);
     my $res = $self->ua->request($req);
+    if ($res->is_success) {
+        return 1;
+    } else {
+        Carp::croak $res->content;
+    }
 }
 
 sub describe_table {
@@ -291,6 +325,11 @@ sub update_table {
 
     my $req = $self->make_request('UpdateTable', $content);
     my $res = $self->ua->request($req);
+    if ($res->is_success) {
+        return 1;
+    } else {
+        Carp::croak $res->content;
+    }
 }
 
 sub query {
