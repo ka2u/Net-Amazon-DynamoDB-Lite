@@ -449,6 +449,17 @@ sub _type_and_value {
     return $type, "$v";
 }
 
+sub _except_type {
+    my $v = shift;
+    my $res;
+    for my $k (keys %{$v}) {
+        my $with_type = $v->{$k};
+        my ($k2) = keys %{$with_type};
+        $res->{$k} = $with_type->{$k2};
+    }
+    return $res;
+}
+
 
 
 1;
