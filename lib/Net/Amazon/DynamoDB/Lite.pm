@@ -349,6 +349,14 @@ sub query {
 
     my $req = $self->make_request('Query', $content);
     my $res = $self->ua->request($req);
+
+    my $decoded = $self->json->decode($res->content);
+    if ($res->is_success) {
+        return _except_type($decoded->{Items});
+    } else {
+        Carp::croak "__type : " . $decoded->{__type} . " message : "
+              . $decoded->{Message};
+    }
 }
 
 sub scan {
@@ -366,6 +374,13 @@ sub scan {
 
     my $req = $self->make_request('Scan', $content);
     my $res = $self->ua->request($req);
+    my $decoded = $self->json->decode($res->content);
+    if ($res->is_success) {
+        return _except_type($decoded->{Items});
+    } else {
+        Carp::croak "__type : " . $decoded->{__type} . " message : "
+              . $decoded->{Message};
+    }
 }
 
 sub batch_get_item {
@@ -383,6 +398,17 @@ sub batch_get_item {
 
     my $req = $self->make_request('BatchGetItem', $content);
     my $res = $self->ua->request($req);
+    my $decoded = $self->json->decode($res->content);
+    if ($res->is_success) {
+        my $res;
+        for my $k (keys $decoded->{Responses}) {
+            push @{$res}, {$k => _except_type($decoded->{Responses}->{$k})};
+        }
+        return $res;
+    } else {
+        Carp::croak "__type : " . $decoded->{__type} . " message : "
+              . $decoded->{Message};
+    }
 }
 
 sub batch_write_item {
@@ -452,10 +478,22 @@ sub _type_and_value {
 sub _except_type {
     my $v = shift;
     my $res;
-    for my $k (keys %{$v}) {
-        my $with_type = $v->{$k};
-        my ($k2) = keys %{$with_type};
-        $res->{$k} = $with_type->{$k2};
+    if (ref $v eq 'HASH') {
+        for my $k (keys %{$v}) {
+            my $with_type = $v->{$k};
+            my ($k2) = keys %{$with_type};
+            $res->{$k} = $with_type->{$k2};
+        }
+    } elsif (ref $v eq 'ARRAY') {
+        for my $w (@{$v}) {
+            my $with_out_type;
+            for my $k (keys %{$w}) {
+                my $with_type = $w->{$k};
+                my ($k2) = keys %{$with_type};
+                $with_out_type->{$k} = $with_type->{$k2};
+            }
+            push @{$res}, $with_out_type;
+        }
     }
     return $res;
 }
