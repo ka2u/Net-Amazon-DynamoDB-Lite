@@ -416,24 +416,26 @@ sub batch_write_item {
 
     my $content;
     if ($mode eq 'PUT') {
-        foreach my $k (keys %{$request_items}) {
-            my $v = $request_items->{$k};
-            my $put;
-            foreach my $l (@{$v}) {
-                my ($key) = keys %{$l};
-                $put->{PutRequest}->{Item}->{$key} = {_type_and_value($l->{$key})};
+        for my $table (keys %{$request_items}) {
+            my $v = $request_items->{$table};
+            for my $l (@{$v}) {
+                my $put = {};
+                for my $key (keys %{$l}) {
+                    $put->{PutRequest}->{Item}->{$key} = {_type_and_value($l->{$key})};
+                }
+                push @{$content->{RequestItems}->{$table}}, $put;
             }
-            push @{$content->{RequestItems}->{$k}}, $put;
         }
     } elsif ($mode eq 'DELETE') {
-        foreach my $k (keys %{$request_items}) {
-            my $v = $request_items->{$k};
-            my $delete;
-            foreach my $l (@{$v}) {
-                my ($key) = keys %{$l};
-                $delete->{DeleteRequest}->{Key}->{$key} = {_type_and_value($l->{$key})};
+        for my $table (keys %{$request_items}) {
+            my $v = $request_items->{$table};
+            for my $l (@{$v}) {
+                my $delete = {};
+                for my $key (keys %{$l}) {
+                    $delete->{DeleteRequest}->{Key}->{$key} = {_type_and_value($l->{$key})};
+                }
+                push @{$content->{RequestItems}->{$table}}, $delete;
             }
-            push @{$content->{RequestItems}->{$k}}, $delete;
         }
     }
 
