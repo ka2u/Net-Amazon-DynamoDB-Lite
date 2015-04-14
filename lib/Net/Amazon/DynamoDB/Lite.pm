@@ -147,14 +147,14 @@ sub list_tables {
 }
 
 sub put_item {
-    my ($self, $table, $fields, $return_consumed_capacity) = @_;
+    my ($self, $table, $attributes, $return_consumed_capacity) = @_;
     my $content = {
         TableName => $table,
         ReturnConsumedCapacity => $return_consumed_capacity,
     };
 
-    foreach my $k (keys %{$fields}) {
-        my $v = $fields->{$k};
+    foreach my $k (keys %{$attributes}) {
+        my $v = $attributes->{$k};
         $content->{Item}->{$k} = { _type_and_value($v) };
     }
 
@@ -168,14 +168,14 @@ sub put_item {
 }
 
 sub get_item {
-    my ($self, $table, $fields) = @_;
+    my ($self, $table, $attributes) = @_;
 
     my $content = {
         TableName => $table,
     };
 
-    foreach my $k (keys %{$fields}) {
-        my $v = $fields->{$k};
+    foreach my $k (keys %{$attributes}) {
+        my $v = $attributes->{$k};
         $content->{Key}->{$k} = { _type_and_value($v) };
     }
 
@@ -190,7 +190,7 @@ sub get_item {
 }
 
 sub update_item {
-    my ($self, $table, $key, $fields, $action) = @_;
+    my ($self, $table, $key, $attributes, $action) = @_;
 
     my $content = {
         TableName => $table,
@@ -201,8 +201,8 @@ sub update_item {
         $content->{Key}->{$k} = { _type_and_value($v) };
     }
 
-    foreach my $k (keys %{$fields}) {
-        my $v = $fields->{$k};
+    foreach my $k (keys %{$attributes}) {
+        my $v = $attributes->{$k};
         $content->{AttributeUpdates}->{$k} = {
             Action => $action || 'PUT',
             Value => { _type_and_value($v) }
@@ -219,14 +219,14 @@ sub update_item {
 }
 
 sub delete_item {
-    my ($self, $table, $fields) = @_;
+    my ($self, $table, $attributes) = @_;
 
     my $content = {
         TableName => $table,
     };
 
-    foreach my $k (keys %{$fields}) {
-        my $v = $fields->{$k};
+    foreach my $k (keys %{$attributes}) {
+        my $v = $attributes->{$k};
         $content->{Key}->{$k} = { _type_and_value($v) };
     }
 
