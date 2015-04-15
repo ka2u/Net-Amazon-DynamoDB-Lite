@@ -38,8 +38,28 @@ SKIP: {
         },
         "TableName" => $table,
     });
-    $dynamo->put_item($table, {id => "12345678", last_update => "2015-03-30 10:24:00"});
-    $dynamo->put_item($table, {id => "99999999", last_update => "2015-03-31 10:24:00"});
+    $dynamo->put_item({
+        "Item" => {
+            "id" => {
+                "S" => "12345678",
+            },
+            "last_update" => {
+                "S" => "2015-03-30 10:24:00",
+            }
+        },
+        "TableName" => $table
+    });
+    $dynamo->put_item({
+        "Item" => {
+            "id" => {
+                "S" => "99999999",
+            },
+            "last_update" => {
+                "S" => "2015-03-31 10:24:00",
+            }
+        },
+        "TableName" => $table
+    });
     my $update_res = $dynamo->update_item($table, {id => "99999999"}, {last_update => "2015-04-06 17:12"});
     ok $update_res;
     my $get_res = $dynamo->get_item($table, {id => "99999999"});

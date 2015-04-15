@@ -144,17 +144,10 @@ sub list_tables {
 }
 
 sub put_item {
-    my ($self, $table, $attributes, $return_consumed_capacity) = @_;
-    my $content = {
-        TableName => $table,
-        ReturnConsumedCapacity => $return_consumed_capacity,
-    };
+    my ($self, $content) = @_;
 
-    foreach my $k (keys %{$attributes}) {
-        my $v = $attributes->{$k};
-        $content->{Item}->{$k} = { _type_and_value($v) };
-    }
-
+    Carp::croak "Item required." unless $content->{Item};
+    Carp::croak "TableName required." unless $content->{TableName};
     my $req = $self->make_request('PutItem', $content);
     my $res = $self->ua->request($req);
     if ($res->is_success) {
@@ -506,6 +499,120 @@ Net::Amazon::DynamoDB::Lite is ...
     {
         "ExclusiveStartTableName" => "string",
         "Limit" => "number"
+    }
+
+=head2 put_item
+
+    {
+        "ConditionExpression" => "string",
+        "ConditionalOperator" => "string",
+        "Expected" => {
+            "string" => {
+                "AttributeValueList": [
+                {
+                    "B" => "blob",
+                    "BOOL" => "boolean",
+                    "BS" => [
+                        "blob"
+                    ],
+                    "L" => [
+                        AttributeValue
+                    ],
+                    "M" => {
+                        "string" => AttributeValue
+                    },
+                    "N" => "string",
+                    "NS" => [
+                        "string"
+                    ],
+                    "NULL" => "boolean",
+                    "S" => "string",
+                    "SS" => [
+                        "string"
+                    ]
+                }
+            ],
+                "ComparisonOperator" => "string",
+                "Exists" => "boolean",
+                "Value" => {
+                    "B" => "blob",
+                    "BOOL" => "boolean",
+                    "BS" => [
+                        "blob"
+                    ],
+                    "L" => [
+                        AttributeValue
+                    ],
+                    "M" => {
+                        "string" => AttributeValue
+                    },
+                    "N" => "string",
+                    "NS" => [
+                        "string"
+                    ],
+                    "NULL" => "boolean",
+                    "S" => "string",
+                    "SS" => [
+                        "string"
+                    ]
+                }
+            }
+        },
+        "ExpressionAttributeNames" => {
+            "string" => "string"
+        },
+        "ExpressionAttributeValues" => {
+            "string" => {
+                "B" => "blob",
+                "BOOL" => "boolean",
+                "BS" => [
+                    "blob"
+                ],
+                "L" => [
+                    AttributeValue
+                ],
+                "M" => {
+                    "string" => AttributeValue
+                },
+                "N" => "string",
+                "NS" => [
+                    "string"
+                ],
+                "NULL" => "boolean",
+                "S" => "string",
+                "SS" => [
+                    "string"
+                ]
+            }
+        },
+        "Item" => {
+            "string" => {
+                "B" => "blob",
+                "BOOL" => "boolean",
+                "BS" => [
+                    "blob"
+                ],
+                "L" => [
+                    AttributeValue
+                ],
+                "M" => {
+                    "string" => AttributeValue
+                },
+                "N" => "string",
+                "NS" => [
+                    "string"
+                ],
+                "NULL" => "boolean",
+                "S" => "string",
+                "SS" => [
+                    "string"
+                ]
+            }
+        },
+        "ReturnConsumedCapacity" => "string",
+        "ReturnItemCollectionMetrics" => "string",
+        "ReturnValues" => "string",
+        "TableName" => "string"
     }
 
 

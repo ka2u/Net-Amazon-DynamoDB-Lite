@@ -39,9 +39,39 @@ SKIP: {
         "TableName" => $table,
     });
     ok $create_res;
-    $dynamo->put_item($table, {id => "11111", last_update => "2015-04-01 10:24:00"});
-    $dynamo->put_item($table, {id => "22222", last_update => "2015-04-02 10:24:00"});
-    $dynamo->put_item($table, {id => "33333", last_update => "2015-03-30 10:24:00"});
+    $dynamo->put_item({
+        "Item" => {
+            "id" => {
+                "S" => "11111",
+            },
+            "last_update" => {
+                "S" => "2015-04-01 10:24:00",
+            }
+        },
+        "TableName" => $table
+    });
+    $dynamo->put_item({
+        "Item" => {
+            "id" => {
+                "S" => "22222",
+            },
+            "last_update" => {
+                "S" => "2015-04-02 10:24:00",
+            }
+        },
+        "TableName" => $table
+    });
+    $dynamo->put_item({
+        "Item" => {
+            "id" => {
+                "S" => "33333",
+            },
+            "last_update" => {
+                "S" => "2015-03-30 10:24:00",
+            }
+        },
+        "TableName" => $table
+    });
     my $res = $dynamo->query($table, {id => "22222"}, "EQ");
     is $res->[0]->{id}, '22222';
     $dynamo->delete_table($table);

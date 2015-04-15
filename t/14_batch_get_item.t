@@ -39,9 +39,39 @@ SKIP: {
         "TableName" => $table,
     });
     ok $create_res;
-    $dynamo->put_item($table, {id => "11111", last_update => "2015-03-30 18:41:23"});
-    $dynamo->put_item($table, {id => "22222", last_update => "2015-03-30 18:41:23"});
-    $dynamo->put_item($table, {id => "33333", last_update => "2015-03-30 18:41:23"});
+    $dynamo->put_item({
+        "Item" => {
+            "id" => {
+                "S" => "11111",
+            },
+            "last_update" => {
+                "S" => "2015-03-30 18:41:23",
+            }
+        },
+        "TableName" => $table
+    });
+    $dynamo->put_item({
+        "Item" => {
+            "id" => {
+                "S" => "22222",
+            },
+            "last_update" => {
+                "S" => "2015-03-30 18:41:23",
+            }
+        },
+        "TableName" => $table
+    });
+    $dynamo->put_item({
+        "Item" => {
+            "id" => {
+                "S" => "33333",
+            },
+            "last_update" => {
+                "S" => "2015-03-30 18:41:23",
+            }
+        },
+        "TableName" => $table
+    });
     my $res = $dynamo->batch_get_item({$table => [{"id" => "22222"}]});
     is_deeply $res->[0]->{$table}, [
         {

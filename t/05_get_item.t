@@ -38,8 +38,28 @@ SKIP: {
         },
         "TableName" => $table,
     });
-    $dynamo->put_item($table, {id => "12345678", last_update => "2015-03-30 10:24:00"});
-    $dynamo->put_item($table, {id => "99999999", last_update => "2015-03-31 10:24:00"});
+    $dynamo->put_item({
+        "Item" => {
+            "id" => {
+                "S" => "12345678",
+            },
+            "last_update" => {
+                "S" => "2015-03-30 10:24:00",
+            }
+        },
+        "TableName" => $table
+    });
+    $dynamo->put_item({
+        "Item" => {
+            "id" => {
+                "S" => "99999999",
+            },
+            "last_update" => {
+                "S" => "2015-03-31 10:24:00",
+            }
+        },
+        "TableName" => $table
+    });
     my $res = $dynamo->get_item($table, {id => "99999999"});
     is_deeply $res, {
         'last_update' => '2015-03-31 10:24:00',
