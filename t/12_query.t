@@ -19,7 +19,25 @@ my $t = localtime;
 my $table = 'test_' . $t->epoch;
 SKIP: {
     skip $@, 3 if $@;
-    my $create_res = $dynamo->create_table($table, 5, 5, {id => 'HASH'}, {id => 'S'});
+    my $create_res = $dynamo->create_table({
+        "AttributeDefinitions" => [
+            {
+                "AttributeName" => "id",
+                "AttributeType" => "S",
+            }
+        ],
+        "KeySchema" => [
+            {
+                "AttributeName" => "id",
+                "KeyType" => "HASH"
+            }
+        ],
+        "ProvisionedThroughput" => {
+            "ReadCapacityUnits" => 5,
+            "WriteCapacityUnits" => 5,
+        },
+        "TableName" => $table,
+    });
     ok $create_res;
     $dynamo->put_item($table, {id => "11111", last_update => "2015-04-01 10:24:00"});
     $dynamo->put_item($table, {id => "22222", last_update => "2015-04-02 10:24:00"});

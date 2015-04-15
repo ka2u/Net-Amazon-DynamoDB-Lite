@@ -20,8 +20,44 @@ my $table = 'test_' . $t->epoch;
 SKIP: {
     skip $@, 1 if $@;
 
-    $dynamo->create_table($table, 5, 5, {id => 'HASH'}, {id => 'S'});
-    $dynamo->create_table($table . '_2', 5, 5, {id => 'HASH'}, {id => 'S'});
+    $dynamo->create_table({
+        "AttributeDefinitions" => [
+            {
+                "AttributeName" => "id",
+                "AttributeType" => "S",
+            }
+        ],
+        "KeySchema" => [
+            {
+                "AttributeName" => "id",
+                "KeyType" => "HASH"
+            }
+        ],
+        "ProvisionedThroughput" => {
+            "ReadCapacityUnits" => 5,
+            "WriteCapacityUnits" => 5,
+        },
+        "TableName" => $table,
+    });
+    $dynamo->create_table({
+        "AttributeDefinitions" => [
+            {
+                "AttributeName" => "id",
+                "AttributeType" => "S",
+            }
+        ],
+        "KeySchema" => [
+            {
+                "AttributeName" => "id",
+                "KeyType" => "HASH"
+            }
+        ],
+        "ProvisionedThroughput" => {
+            "ReadCapacityUnits" => 5,
+            "WriteCapacityUnits" => 5,
+        },
+        "TableName" => $table . "_2",
+    });
     my $res = $dynamo->list_tables;
     is_deeply [sort @{$res}], [$table, $table . '_2'];
     $dynamo->delete_table($table);

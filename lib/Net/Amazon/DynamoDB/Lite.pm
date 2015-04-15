@@ -240,38 +240,21 @@ sub delete_item {
 }
 
 sub create_table {
-    my ($self, $table, $read_capacity, $write_capacity, $primary, $attributes) = @_;
+    my ($self, $content) = @_;
 
-    my $content = {
-        TableName => $table,
-        ProvisionedThroughput => {
-            ReadCapacityUnits => $read_capacity || 5,
-            WriteCapacityUnits => $write_capacity || 5,
-        }
-    };
-
-    foreach my $k (keys %{$attributes}) {
-        my $type = $attributes->{$k};
-        push @{$content->{AttributeDefinitions}}, {
-            AttributeName => $k,
-            AttributeType => $type,
-        };
-    }
-
-    foreach my $k (keys %{$primary}) {
-        my $type = $primary->{$k};
-        push @{$content->{KeySchema}}, {
-            AttributeName => $k,
-            KeyType => $type,
-        };
-    }
+    Carp::croak "AttributeDefinitions required." unless $content->{AttributeDefinitions};
+    Carp::croak "KeySchema required." unless $content->{KeySchema};
+    Carp::croak "ProvisionedThroughput required." unless $content->{ProvisionedThroughput};
+    Carp::croak "TableName required." unless $content->{TableName};
 
     my $req = $self->make_request('CreateTable', $content);
     my $res = $self->ua->request($req);
+    my $decoded = $self->json->decode($res->content);
     if ($res->is_success) {
         return 1;
     } else {
-        Carp::croak $res->content;
+        Carp::croak "__type : " . $decoded->{__type} . " message : "
+              . $decoded->{Message};
     }
 }
 
@@ -518,6 +501,68 @@ Net::Amazon::DynamoDB::Lite - It's new $module
 =head1 DESCRIPTION
 
 Net::Amazon::DynamoDB::Lite is ...
+
+=head1 METHODS
+
+=head2 create_table
+
+    {
+        "AttributeDefinitions" => [
+            {
+                "AttributeName" => "string",
+                "AttributeType" => "string",
+            }
+        ],
+        "GlobalSecondaryIndexes" => [
+            {
+                "IndexName" => "string",
+                "KeySchema" => [
+                    {
+                        "AttributeName" => "string",
+                        "KeyType" => "string"
+                    }
+                ],
+                "Projection" => {
+                    "NonKeyAttributes" => [
+                        "string"
+                    ],
+                    "ProjectionType" => "string"
+                },
+                "ProvisionedThroughput" => {
+                    "ReadCapacityUnits" => "number",
+                    "WriteCapacityUnits" => "number"
+                }
+            }
+        ],
+        "KeySchema" => [
+            {
+                "AttributeName" => "string",
+                "KeyType" => "string"
+            }
+        ],
+        "LocalSecondaryIndexes" => [
+            {
+                "IndexName" => "string",
+                "KeySchema" => [
+                    {
+                        "AttributeName" => "string",
+                        "KeyType" => "string"
+                    }
+                ],
+                "Projection" => {
+                     "NonKeyAttributes" => [
+                         "string"
+                     ],
+                     "ProjectionType" => "string"
+                 }
+            }
+        ],
+        "ProvisionedThroughput" => {
+            "ReadCapacityUnits" => "number",
+            "WriteCapacityUnits" => "number"
+        },
+        "TableName" => "string"
+    }
 
 =head1 LICENSE
 
