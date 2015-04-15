@@ -63,7 +63,14 @@ SKIP: {
     });
     my $delete_res = $dynamo->delete_item($table, {id => "99999999"});
     ok $delete_res;
-    my $get_res = $dynamo->get_item('test', {id => "99999999"});
+    my $get_res = $dynamo->get_item({
+        "Key" => {
+            id => {
+                "S" => "99999999",
+            }
+        },
+        "TableName" => $table
+    });
     is $get_res, undef;
     $dynamo->delete_table($table);
 }

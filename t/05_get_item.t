@@ -60,7 +60,14 @@ SKIP: {
         },
         "TableName" => $table
     });
-    my $res = $dynamo->get_item($table, {id => "99999999"});
+    my $res = $dynamo->get_item({
+        "Key" => {
+            id => {
+                "S" => "99999999",
+            }
+        },
+        "TableName" => $table
+    });
     is_deeply $res, {
         'last_update' => '2015-03-31 10:24:00',
         'id' => '99999999',

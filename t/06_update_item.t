@@ -62,7 +62,14 @@ SKIP: {
     });
     my $update_res = $dynamo->update_item($table, {id => "99999999"}, {last_update => "2015-04-06 17:12"});
     ok $update_res;
-    my $get_res = $dynamo->get_item($table, {id => "99999999"});
+    my $get_res = $dynamo->get_item({
+        "Key" => {
+            id => {
+                "S" => "99999999",
+            }
+        },
+        "TableName" => $table
+    });
     is_deeply $get_res, {
         'last_update' => "2015-04-06 17:12",
         'id' => '99999999',
