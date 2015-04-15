@@ -130,12 +130,9 @@ sub make_request {
 }
 
 sub list_tables {
-    my ($self, $exclusive_start, $limit) = @_;
+    my ($self, $content) = @_;
 
-    my $content = {
-        ExclusiveStartTableName => $exclusive_start,
-        Limit => $limit || 10,
-    };
+    $content = {} unless $content;
     my $req = $self->make_request('ListTables', $content);
     my $res = $self->ua->request($req);
     my $decoded;
@@ -503,6 +500,14 @@ Net::Amazon::DynamoDB::Lite - It's new $module
 Net::Amazon::DynamoDB::Lite is ...
 
 =head1 METHODS
+
+=head2 list_tables
+
+    {
+        "ExclusiveStartTableName" => "string",
+        "Limit" => "number"
+    }
+
 
 =head2 create_table
 
