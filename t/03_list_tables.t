@@ -11,13 +11,12 @@ my $dynamo = Net::Amazon::DynamoDB::Lite->new(
     uri => URI->new('http://localhost:8000'),
 );
 
-eval {
-    $dynamo->list_tables;
-};
-
 my $t = localtime;
 my $table = 'test_' . $t->epoch;
 SKIP: {
+    eval {
+        $dynamo->list_tables;
+        };
     skip $@, 1 if $@;
 
     $dynamo->create_table({
