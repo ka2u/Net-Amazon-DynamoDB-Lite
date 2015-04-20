@@ -60,7 +60,15 @@ SKIP: {
         },
         "TableName" => $table
     });
-    my $delete_res = $dynamo->delete_item($table, {id => "99999999"});
+    my $delete_res = $dynamo->delete_item({
+        "Key" => {
+            "id" => {
+                "S" => "99999999",
+            }
+        },
+        "TableName" => $table
+    });
+
     ok $delete_res;
     my $get_res = $dynamo->get_item({
         "Key" => {

@@ -187,17 +187,10 @@ sub update_item {
 }
 
 sub delete_item {
-    my ($self, $table, $attributes) = @_;
+    my ($self, $content) = @_;
 
-    my $content = {
-        TableName => $table,
-    };
-
-    foreach my $k (keys %{$attributes}) {
-        my $v = $attributes->{$k};
-        $content->{Key}->{$k} = { _type_and_value($v) };
-    }
-
+    Carp::croak "Key required." unless $content->{Key};
+    Carp::croak "TableName required." unless $content->{TableName};
     my $req = $self->make_request('DeleteItem', $content);
     my $res = $self->ua->request($req);
     if ($res->is_success) {
@@ -772,6 +765,120 @@ Net::Amazon::DynamoDB::Lite is ...
         "ReturnValues" => "string",
         "TableName" => "string",
         "UpdateExpression" => "string"
+    }
+
+=head2 delete_item
+
+    {
+        "ConditionExpression" => "string",
+        "ConditionalOperator" => "string",
+        "Expected" => {
+            "string" => {
+                "AttributeValueList" => [
+                    {
+                        "B" => "blob",
+                        "BOOL" => "boolean",
+                        "BS" => [
+                            "blob"
+                        ],
+                        "L" => [
+                            AttributeValue
+                        ],
+                        "M" => {
+                            "string" => AttributeValue
+                        },
+                        "N" => "string",
+                        "NS" => [
+                            "string"
+                        ],
+                        "NULL" => "boolean",
+                        "S" => "string",
+                        "SS" => [
+                            "string"
+                        ]
+                    }
+                ],
+                "ComparisonOperator" => "string",
+                "Exists" => "boolean",
+                "Value" => {
+                    "B" => "blob",
+                    "BOOL" => "boolean",
+                    "BS" => [
+                        "blob"
+                    ],
+                    "L" => [
+                        AttributeValue
+                    ],
+                    "M" => {
+                        "string" => AttributeValue
+                    },
+                    "N" => "string",
+                    "NS" => [
+                        "string"
+                    ],
+                    "NULL" => "boolean",
+                    "S" => "string",
+                    "SS" => [
+                        "string"
+                    ]
+                }
+            }
+        },
+        "ExpressionAttributeNames" => {
+            "string" => "string"
+        },
+        "ExpressionAttributeValues" => {
+            "string" => {
+                "B" => "blob",
+                "BOOL" => "boolean",
+                "BS" => [
+                    "blob"
+                ],
+                "L" => [
+                    AttributeValue
+                ],
+                "M" => {
+                    "string" => AttributeValue
+                },
+                "N" => "string",
+                "NS" => [
+                    "string"
+                ],
+                "NULL" => "boolean",
+                "S" => "string",
+                "SS" => [
+                    "string"
+                ]
+            }
+        },
+        "Key" => {
+            "string" => {
+                "B" => "blob",
+                "BOOL" => "boolean",
+                "BS" => [
+                    "blob"
+                ],
+                "L" => [
+                    AttributeValue
+                ],
+                "M" => {
+                    "string" =>  AttributeValue
+                },
+                "N" => "string",
+                "NS" => [
+                    "string"
+                ],
+                "NULL" => "boolean",
+                "S" => "string",
+                "SS" => [
+                    "string"
+                ]
+            }
+        },
+        "ReturnConsumedCapacity" => "string",
+        "ReturnItemCollectionMetrics" => "string",
+        "ReturnValues" => "string",
+        "TableName" => "string"
     }
 
 =head2 create_table
