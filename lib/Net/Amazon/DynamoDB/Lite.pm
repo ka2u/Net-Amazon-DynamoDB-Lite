@@ -173,25 +173,10 @@ sub get_item {
 }
 
 sub update_item {
-    my ($self, $table, $key, $attributes, $action) = @_;
+    my ($self, $content) = @_;
 
-    my $content = {
-        TableName => $table,
-    };
-
-    foreach my $k (keys %{$key}) {
-        my $v = $key->{$k};
-        $content->{Key}->{$k} = { _type_and_value($v) };
-    }
-
-    foreach my $k (keys %{$attributes}) {
-        my $v = $attributes->{$k};
-        $content->{AttributeUpdates}->{$k} = {
-            Action => $action || 'PUT',
-            Value => { _type_and_value($v) }
-        };
-    }
-
+    Carp::croak "Key required." unless $content->{Key};
+    Carp::croak "TableName required." unless $content->{TableName};
     my $req = $self->make_request('UpdateItem', $content);
     my $res = $self->ua->request($req);
     if ($res->is_success) {
@@ -645,6 +630,148 @@ Net::Amazon::DynamoDB::Lite is ...
         "ProjectionExpression" => "string",
         "ReturnConsumedCapacity" => "string",
         "TableName" => "string"
+    }
+
+=head2 update_item
+
+    {
+        "AttributeUpdates" => {
+            "string" => {
+                "Action" => "string",
+                "Value" => {
+                    "B" => "blob",
+                    "BOOL" => "boolean",
+                    "BS" => [
+                        "blob"
+                    ],
+                    "L" => [
+                        AttributeValue
+                    ],
+                    "M" => {
+                        "string" => AttributeValue
+                    },
+                    "N" => "string",
+                    "NS" => [
+                        "string"
+                    ],
+                    "NULL" => "boolean",
+                    "S" => "string",
+                    "SS" => [
+                        "string"
+                    ]
+                }
+            }
+        },
+        "ConditionExpression" => "string",
+        "ConditionalOperator" => "string",
+        "Expected" => {
+            "string" => {
+                "AttributeValueList" => [
+                    {
+                        "B" => "blob",
+                        "BOOL" => "boolean",
+                        "BS" => [
+                            "blob"
+                        ],
+                        "L" => [
+                            AttributeValue
+                        ],
+                        "M" => {
+                            "string" => AttributeValue
+                        },
+                        "N" => "string",
+                        "NS" => [
+                            "string"
+                        ],
+                        "NULL" => "boolean",
+                        "S" => "string",
+                        "SS" => [
+                            "string"
+                        ]
+                    }
+                ],
+                "ComparisonOperator" => "string",
+                "Exists" => "boolean",
+                "Value" => {
+                    "B" => "blob",
+                    "BOOL" => "boolean",
+                    "BS" => [
+                        "blob"
+                    ],
+                    "L" => [
+                        AttributeValue
+                    ],
+                    "M" => {
+                        "string" => AttributeValue
+                    },
+                    "N" => "string",
+                    "NS" => [
+                        "string"
+                    ],
+                    "NULL" => "boolean",
+                    "S" => "string",
+                    "SS" => [
+                        "string"
+                    ]
+                }
+            }
+        },
+        "ExpressionAttributeNames" => {
+            "string" => "string"
+        },
+        "ExpressionAttributeValues" => {
+            "string" => {
+                "B" => "blob",
+                "BOOL" => "boolean",
+                "BS" => [
+                    "blob"
+                ],
+                "L" => [
+                    AttributeValue
+                ],
+                "M" => {
+                    "string" => AttributeValue
+                },
+                "N" => "string",
+                "NS" => [
+                    "string"
+                ],
+                "NULL" => "boolean",
+                "S" => "string",
+                "SS" => [
+                    "string"
+                ]
+            }
+        },
+        "Key" => {
+            "string" => {
+                "B" => "blob",
+                "BOOL" => "boolean",
+                "BS" => [
+                    "blob"
+                ],
+                "L" => [
+                    AttributeValue
+                ],
+                "M" => {
+                    "string" => AttributeValue
+                },
+                "N" => "string",
+                "NS" => [
+                    "string"
+                ],
+                "NULL" => "boolean",
+                "S" => "string",
+                "SS" => [
+                    "string"
+                ]
+            }
+        },
+        "ReturnConsumedCapacity" => "string",
+        "ReturnItemCollectionMetrics" => "string",
+        "ReturnValues" => "string",
+        "TableName" => "string",
+        "UpdateExpression" => "string"
     }
 
 =head2 create_table

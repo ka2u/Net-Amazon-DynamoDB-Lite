@@ -60,7 +60,23 @@ SKIP: {
         },
         "TableName" => $table
     });
-    my $update_res = $dynamo->update_item($table, {id => "99999999"}, {last_update => "2015-04-06 17:12"});
+    my $update_res = $dynamo->update_item(
+    {
+        "AttributeUpdates" => {
+            "last_update" => {
+                "Action" => "PUT",
+                "Value" => {
+                    "S" => "2015-04-06 17:12:00",
+                }
+            }
+        },
+        "Key" => {
+            "id" => {
+                "S" => "99999999",
+            }
+        },
+        "TableName" => $table,
+    });
     ok $update_res;
     my $get_res = $dynamo->get_item({
         "Key" => {
@@ -71,7 +87,7 @@ SKIP: {
         "TableName" => $table
     });
     is_deeply $get_res, {
-        'last_update' => "2015-04-06 17:12",
+        'last_update' => "2015-04-06 17:12:00",
         'id' => '99999999',
     };
     $dynamo->delete_table($table);
