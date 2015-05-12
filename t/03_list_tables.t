@@ -59,8 +59,8 @@ SKIP: {
     });
     my $res = $dynamo->list_tables;
     is_deeply [sort @{$res}], [$table, $table . '_2'];
-    $dynamo->delete_table($table);
-    $dynamo->delete_table($table . '_2');
+    $dynamo->delete_table({TableName => $table});
+    $dynamo->delete_table({TableName => $table . '_2'});
 }
 
 

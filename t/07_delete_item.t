@@ -79,7 +79,7 @@ SKIP: {
         "TableName" => $table
     });
     is $get_res, undef;
-    $dynamo->delete_table($table);
+    $dynamo->delete_table({TableName => $table});
 }
 
 

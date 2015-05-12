@@ -90,7 +90,7 @@ SKIP: {
         'last_update' => "2015-04-06 17:12:00",
         'id' => '99999999',
     };
-    $dynamo->delete_table($table);
+    $dynamo->delete_table({TableName => $table});
 }
 
 

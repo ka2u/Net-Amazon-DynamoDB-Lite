@@ -74,7 +74,7 @@ SKIP: {
     });
     my $res = $dynamo->query($table, {id => "22222"}, "EQ");
     is $res->[0]->{id}, '22222';
-    $dynamo->delete_table($table);
+    $dynamo->delete_table({TableName => $table});
 }
 
 done_testing;

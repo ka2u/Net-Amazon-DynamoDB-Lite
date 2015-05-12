@@ -220,12 +220,9 @@ sub create_table {
 }
 
 sub delete_table {
-    my ($self, $table) = @_;
+    my ($self, $content) = @_;
 
-    my $content = {
-        TableName => $table,
-    };
-
+    Carp::croak "TableName required." unless $content->{TableName};
     my $req = $self->make_request('DeleteTable', $content);
     my $res = $self->ua->request($req);
     if ($res->is_success) {
@@ -938,6 +935,12 @@ Net::Amazon::DynamoDB::Lite is ...
             "ReadCapacityUnits" => "number",
             "WriteCapacityUnits" => "number"
         },
+        "TableName" => "string"
+    }
+
+=head2 delete_table
+
+    {
         "TableName" => "string"
     }
 

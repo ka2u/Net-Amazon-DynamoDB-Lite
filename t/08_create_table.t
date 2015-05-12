@@ -51,7 +51,7 @@ SKIP: {
         "TableName" => $table
     });
     ok $put_res;
-    $dynamo->delete_table($table);
+    $dynamo->delete_table({TableName => $table});
 }
 
 

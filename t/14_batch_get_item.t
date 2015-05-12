@@ -79,7 +79,7 @@ SKIP: {
             'id' => '22222'
         }
     ];
-    $dynamo->delete_table($table);
+    $dynamo->delete_table({TableName => $table});
 }
 
 done_testing;

@@ -74,7 +74,7 @@ SKIP: {
     });
     my $res = $dynamo->scan($table, "last_update = :val", {":val" => "2015-03-30 18:41:23"});
     is scalar @{$res}, 3;
-    $dynamo->delete_table($table);
+    $dynamo->delete_table({TableName => $table});
 }
 
 done_testing;

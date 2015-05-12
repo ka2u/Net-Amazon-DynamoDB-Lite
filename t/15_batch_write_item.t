@@ -48,7 +48,7 @@ SKIP: {
         }
     ];
 
-    $dynamo->delete_table($table);
+    $dynamo->delete_table({TableName => $table});
 }
 
 done_testing;
