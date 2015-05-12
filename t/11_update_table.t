@@ -51,7 +51,19 @@ SKIP: {
         "TableName" => $table
     });
     ok $put_res;
-    my $update_res = $dynamo->update_table($table, 10, 10, {name => 'S'});
+    my $update_res = $dynamo->update_table(    {
+        "ProvisionedThroughput" => {
+            "ReadCapacityUnits" => 10,
+            "WriteCapacityUnits" => 10,
+        },
+        "AttributeDefinitions" => [
+            {
+                "AttributeName" => "name",
+                "AttributeType" => "S"
+            }
+        ],
+        "TableName" => $table
+    });
     ok $update_res;
     my $describe_res = $dynamo->describe_table({TableName => $table});
     delete $describe_res->{CreationDateTime};

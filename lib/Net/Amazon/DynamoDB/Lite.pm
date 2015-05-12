@@ -247,24 +247,9 @@ sub describe_table {
 }
 
 sub update_table {
-    my ($self, $table, $read_capacity, $write_capacity, $attributes) = @_;
+    my ($self, $content) = @_;
 
-    my $content = {
-        TableName => $table,
-        ProvisionedThroughput => {
-            ReadCapacityUnits => $read_capacity || 5,
-            WriteCapacityUnits => $write_capacity || 5,
-        }
-    };
-
-    foreach my $k (keys %{$attributes}) {
-        my $type = $attributes->{$k};
-        push @{$content->{AttributeDefinitions}}, {
-            AttributeName => $k,
-            AttributeType => $type,
-        };
-    }
-
+    Carp::croak "TableName required." unless $content->{TableName};
     my $req = $self->make_request('UpdateTable', $content);
     my $res = $self->ua->request($req);
     if ($res->is_success) {
@@ -951,7 +936,55 @@ Net::Amazon::DynamoDB::Lite is ...
         "TableName" => "string"
     }
 
-=head2 
+=head2 update_table
+
+    {
+        "AttributeDefinitions" => [
+            {
+                "AttributeName" => "string",
+                "AttributeType" => "string"
+            }
+        ],
+        "GlobalSecondaryIndexUpdates" => [
+            {
+                "Create" => {
+                    "IndexName" => "string",
+                    "KeySchema" => [
+                        {
+                            "AttributeName" => "string",
+                            "KeyType" => "string"
+                        }
+                    ],
+                    "Projection" => {
+                        "NonKeyAttributes" => [
+                            "string"
+                        ],
+                        "ProjectionType" =>  "string"
+                     },
+                    "ProvisionedThroughput" => {
+                        "ReadCapacityUnits" => "number",
+                        "WriteCapacityUnits" => "number"
+                    }
+                },
+                "Delete" => {
+                    "IndexName" => "string"
+                },
+                "Update" => {
+                    "IndexName" => "string",
+                    "ProvisionedThroughput" => {
+                        "ReadCapacityUnits" => "number",
+                        "WriteCapacityUnits" => "number"
+                    }
+                }
+           }
+        ],
+        "ProvisionedThroughput" => {
+            "ReadCapacityUnits" => "number",
+            "WriteCapacityUnits" => "number"
+        },
+        "TableName" => "string"
+    }
+
 
 
 =head1 LICENSE
