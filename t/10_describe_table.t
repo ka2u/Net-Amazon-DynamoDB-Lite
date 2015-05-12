@@ -51,7 +51,9 @@ SKIP: {
         "TableName" => $table
     });
     ok $put_res;
-    my $describe_res = $dynamo->describe_table($table);
+    my $describe_res = $dynamo->describe_table({
+        "TableName" => $table,
+    });
     delete $describe_res->{CreationDateTime};
     is_deeply $describe_res, {
         'AttributeDefinitions' => [

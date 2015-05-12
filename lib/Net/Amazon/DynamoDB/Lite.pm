@@ -233,15 +233,16 @@ sub delete_table {
 }
 
 sub describe_table {
-    my ($self, $table) = @_;
+    my ($self, $content) = @_;
 
-    my $content = {
-        TableName => $table,
-    };
-
+    Carp::croak "TableName required." unless $content->{TableName};
     my $req = $self->make_request('DescribeTable', $content);
     my $res = $self->ua->request($req);
-    my $decoded = $self->json->decode($res->content);
+    my $decoded;
+    eval {
+        $decoded = $self->json->decode($res->content);
+    };
+    Carp::croak $res->content if $@;
     return $decoded->{Table};
 }
 
@@ -943,6 +944,15 @@ Net::Amazon::DynamoDB::Lite is ...
     {
         "TableName" => "string"
     }
+
+=head2 describe_table
+
+    {
+        "TableName" => "string"
+    }
+
+=head2 
+
 
 =head1 LICENSE
 
