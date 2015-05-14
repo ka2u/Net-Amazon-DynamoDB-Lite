@@ -260,20 +260,9 @@ sub update_table {
 }
 
 sub query {
-    my ($self, $table, $query, $comparison_operator) = @_;
+    my ($self, $content) = @_;
 
-    my $content = {
-        TableName => $table,
-    };
-
-    foreach my $k (keys %{$query}) {
-        my $v = $query->{$k};
-        push @{$content->{KeyConditions}->{$k}->{AttributeValueList}}, {
-            _type_and_value($v)
-        };
-        $content->{KeyConditions}->{$k}->{ComparisonOperator} = $comparison_operator;
-    }
-
+    Carp::croak "TableName required." unless $content->{TableName};
     my $req = $self->make_request('Query', $content);
     my $res = $self->ua->request($req);
 
@@ -982,6 +971,134 @@ Net::Amazon::DynamoDB::Lite is ...
             "ReadCapacityUnits" => "number",
             "WriteCapacityUnits" => "number"
         },
+        "TableName" => "string"
+    }
+
+=head2 query
+
+    {
+        "AttributesToGet" => [
+            "string"
+        ],
+        "ConditionalOperator" => "string",
+        "ConsistentRead" => "boolean",
+        "ExclusiveStartKey" => {
+            "string" => {
+                "B" => "blob",
+                "BOOL" => "boolean",
+                "BS" => [
+                    "blob"
+                ],
+                "L" => [
+                    AttributeValue
+                 ],
+                 "M" => {
+                     "string" => AttributeValue
+                 },
+                 "N" => "string",
+                 "NS" => [
+                     "string"
+                 ],
+                 "NULL" => "boolean",
+                 "S" => "string",
+                 "SS" => [
+                     "string"
+                 ]
+            }
+        },
+        "ExpressionAttributeNames" => {
+           "string" => "string"
+        },
+        "ExpressionAttributeValues" => {
+            "string" => {
+                "B" => "blob",
+                "BOOL" => "boolean",
+                "BS" => [
+                    "blob"
+                ],
+                "L" => [
+                    AttributeValue
+                ],
+                "M" => {
+                    "string" => AttributeValue
+                },
+                "N" => "string",
+                "NS" => [
+                    "string"
+                ],
+                "NULL" => "boolean",
+                "S" => "string",
+                "SS" => [
+                    "string"
+                ]
+            }
+        },
+        "FilterExpression" => "string",
+        "IndexName" => "string",
+        "KeyConditionExpression" => "string",
+        "KeyConditions" => {
+            "string" => {
+                "AttributeValueList" => [
+                    {
+                        "B" => "blob",
+                        "BOOL" => "boolean",
+                        "BS" => [
+                            "blob"
+                        ],
+                        "L" => [
+                            AttributeValue
+                        ],
+                        "M" => {
+                             "string" => AttributeValue
+                        },
+                        "N" => "string",
+                        "NS" => [
+                            "string"
+                        ],
+                        "NULL" => "boolean",
+                        "S" => "string",
+                        "SS" => [
+                            "string"
+                        ]
+                    }
+                ],
+                "ComparisonOperator" => "string"
+            }
+        },
+        "Limit" => "number",
+        "ProjectionExpression" => "string",
+        "QueryFilter" => {
+            "string" => {
+                "AttributeValueList" => [
+                    {
+                        "B" => "blob",
+                        "BOOL" => "boolean",
+                        "BS" => [
+                            "blob"
+                        ],
+                        "L" => [
+                            AttributeValue
+                        ],
+                        "M" => {
+                            "string" => AttributeValue
+                        },
+                        "N" => "string",
+                        "NS" => [
+                            "string"
+                        ],
+                        "NULL" => "boolean",
+                        "S" => "string",
+                        "SS" => [
+                            "string"
+                        ]
+                    }
+                ],
+                "ComparisonOperator" => "string"
+            }
+        },
+        "ReturnConsumedCapacity" => "string",
+        "ScanIndexForward" => "boolean",
+        "Select" => "string",
         "TableName" => "string"
     }
 

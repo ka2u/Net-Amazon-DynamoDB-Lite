@@ -72,7 +72,19 @@ SKIP: {
         },
         "TableName" => $table
     });
-    my $res = $dynamo->query($table, {id => "22222"}, "EQ");
+    my $res = $dynamo->query({
+        "KeyConditions" => {
+            "id" => {
+                "AttributeValueList" => [
+                    {
+                        "S" => "22222",
+                    }
+                ],
+                "ComparisonOperator" => "EQ"
+            }
+        },
+        "TableName" => $table
+    });
     is $res->[0]->{id}, '22222';
     $dynamo->delete_table({TableName => $table});
 }
