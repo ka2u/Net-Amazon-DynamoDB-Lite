@@ -135,12 +135,13 @@ sub list_tables {
     $content = {} unless $content;
     my $req = $self->make_request('ListTables', $content);
     my $res = $self->ua->request($req);
-    my $decoded;
-    eval {
-        $decoded = $self->json->decode($res->content);
-    };
-    Carp::croak $res->content if $@;
-    return $decoded->{TableNames};
+    my $decoded = $self->json->decode($res->content);
+    if ($res->is_success) {
+        return $decoded->{TableNames};
+    }
+    else {
+        Carp::croak $self->_error_content($res, $decoded);
+    }
 }
 
 sub put_item {
@@ -153,7 +154,8 @@ sub put_item {
     if ($res->is_success) {
         return 1;
     } else {
-        Carp::croak $res->content;
+        my $decoded = $self->json->decode($res->content);
+        Carp::croak $self->_error_content($res, $decoded);
     }
 }
 
@@ -164,12 +166,14 @@ sub get_item {
     Carp::croak "TableName required." unless $content->{TableName};
     my $req = $self->make_request('GetItem', $content);
     my $res = $self->ua->request($req);
-    my $decoded;
-    eval {
-        $decoded = $self->json->decode($res->content);
-    };
-    Carp::croak $res->content if $@;
-    return _except_type($decoded->{Item});
+    my $decoded = $self->json->decode($res->content);
+    if ($res->is_success) {
+        return _except_type($decoded->{Item});
+    }
+    else {
+        Carp::croak $self->_error_content($res, $decoded);
+    }
+
 }
 
 sub update_item {
@@ -182,7 +186,8 @@ sub update_item {
     if ($res->is_success) {
         return 1;
     } else {
-        Carp::croak $res->content;
+        my $decoded = $self->json->decode($res->content);
+        Carp::croak $self->_error_content($res, $decoded);
     }
 }
 
@@ -196,7 +201,8 @@ sub delete_item {
     if ($res->is_success) {
         return 1;
     } else {
-        Carp::croak $res->content;
+        my $decoded = $self->json->decode($res->content);
+        Carp::croak $self->_error_content($res, $decoded);
     }
 }
 
@@ -210,12 +216,11 @@ sub create_table {
 
     my $req = $self->make_request('CreateTable', $content);
     my $res = $self->ua->request($req);
-    my $decoded = $self->json->decode($res->content);
     if ($res->is_success) {
         return 1;
     } else {
-        Carp::croak "__type : " . $decoded->{__type} . " message : "
-              . $decoded->{Message};
+        my $decoded = $self->json->decode($res->content);
+        Carp::croak $self->_error_content($res, $decoded);
     }
 }
 
@@ -228,7 +233,8 @@ sub delete_table {
     if ($res->is_success) {
         return 1;
     } else {
-        Carp::croak $res->content;
+        my $decoded = $self->json->decode($res->content);
+        Carp::croak $self->_error_content($res, $decoded);
     }
 }
 
@@ -238,12 +244,14 @@ sub describe_table {
     Carp::croak "TableName required." unless $content->{TableName};
     my $req = $self->make_request('DescribeTable', $content);
     my $res = $self->ua->request($req);
-    my $decoded;
-    eval {
-        $decoded = $self->json->decode($res->content);
-    };
-    Carp::croak $res->content if $@;
-    return $decoded->{Table};
+    my $decoded = $self->json->decode($res->content);
+    if ($res->is_success) {
+        return $decoded->{Table};
+    }
+    else {
+        Carp::croak $self->_error_content($res, $decoded);
+    }
+
 }
 
 sub update_table {
@@ -255,7 +263,8 @@ sub update_table {
     if ($res->is_success) {
         return 1;
     } else {
-        Carp::croak $res->content;
+        my $decoded = $self->json->decode($res->content);
+        Carp::croak $self->_error_content($res, $decoded);
     }
 }
 
@@ -270,8 +279,7 @@ sub query {
     if ($res->is_success) {
         return _except_type($decoded->{Items});
     } else {
-        Carp::croak "__type : " . $decoded->{__type} . " message : "
-              . $decoded->{Message};
+        Carp::croak $self->_error_content($res, $decoded);
     }
 }
 
@@ -285,8 +293,7 @@ sub scan {
     if ($res->is_success) {
         return _except_type($decoded->{Items});
     } else {
-        Carp::croak "__type : " . $decoded->{__type} . " message : "
-              . $decoded->{Message};
+        Carp::croak $self->_error_content($res, $decoded);
     }
 }
 
@@ -304,8 +311,7 @@ sub batch_get_item {
         }
         return $res;
     } else {
-        Carp::croak "__type : " . $decoded->{__type} . " message : "
-              . $decoded->{Message};
+        Carp::croak $self->_error_content($res, $decoded);
     }
 }
 
@@ -315,6 +321,13 @@ sub batch_write_item {
     Carp::croak "RequestItems required." unless $content->{RequestItems};
     my $req = $self->make_request('BatchWriteItem', $content);
     my $res = $self->ua->request($req);
+    if ($res->is_success) {
+        return 1;
+    }
+    else {
+        my $decoded = $self->json->decode($res->content);
+        Carp::croak $self->_error_content($res, $decoded);
+    }
 }
 
 sub _except_type {
@@ -340,6 +353,13 @@ sub _except_type {
     return $res;
 }
 
+sub _error_content {
+    my ($self, $res, $decoded) = @_;
+
+    return  "status_code : " . $res->status_line
+      . " __type : " . $decoded->{__type}
+      . " message : " . $decoded->{Message};
+}
 
 
 1;
