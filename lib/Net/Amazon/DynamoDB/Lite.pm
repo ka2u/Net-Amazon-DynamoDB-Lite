@@ -276,18 +276,9 @@ sub query {
 }
 
 sub scan {
-    my ($self, $table, $filter_expressions, $expression_attribute_values) = @_;
+    my ($self, $content) = @_;
 
-    my $content = {
-        TableName => $table,
-        FilterExpression => $filter_expressions,
-    };
-
-    foreach my $k (keys %{$expression_attribute_values}) {
-        my $v = $expression_attribute_values->{$k};
-        $content->{ExpressionAttributeValues} = { $k => {_type_and_value($v)} };
-    }
-
+    Carp::croak "TableName required." unless $content->{TableName};
     my $req = $self->make_request('Scan', $content);
     my $res = $self->ua->request($req);
     my $decoded = $self->json->decode($res->content);
@@ -1100,6 +1091,105 @@ Net::Amazon::DynamoDB::Lite is ...
         "ScanIndexForward" => "boolean",
         "Select" => "string",
         "TableName" => "string"
+    }
+
+=head2 scan
+
+    {
+        "AttributesToGet" => [
+            "string"
+        ],
+        "ConditionalOperator" => "string",
+        "ExclusiveStartKey" => {
+            "string" => {
+                "B" => "blob",
+                "BOOL" => "boolean",
+                "BS" => [
+                    "blob"
+                ],
+                "L" => [
+                    AttributeValue
+                ],
+                "M" => {
+                    "string" => AttributeValue
+                },
+                "N" => "string",
+                "NS" => [
+                    "string"
+                ],
+                "NULL" => "boolean",
+                "S" => "string",
+                "SS" => [
+                    "string"
+                ]
+            }
+
+        },
+        "ExpressionAttributeNames" => {
+            "string" => "string"
+        },
+        "ExpressionAttributeValues" => {
+            "string" => {
+                "B" => "blob",
+                "BOOL" => "boolean",
+                "BS" => [
+                    "blob"
+                ],
+                "L" => [
+                    AttributeValue
+                ],
+                "M" => {
+                    "string" => AttributeValue
+                },
+               "N" => "string",
+               "NS" => [
+                    "string"
+                ],
+                "NULL" => "boolean",
+                "S" => "string",
+                "SS" => [
+                    "string"
+                ]
+            }
+        },
+        "FilterExpression" => "string",
+        "IndexName" => "string",
+        "Limit" => "number",
+        "ProjectionExpression" => "string",
+        "ReturnConsumedCapacity" => "string",
+        "ScanFilter" => {
+            "string" => {
+                "AttributeValueList" => [
+                    {
+                        "B" => "blob",
+                        "BOOL" => "boolean",
+                        "BS" => [
+                            "blob"
+                        ],
+                        "L" => [
+                            AttributeValue
+                        ],
+                        "M" => {
+                            "string" => AttributeValue
+                        },
+                        "N" => "string",
+                        "NS" => [
+                               "string"
+                        ],
+                        "NULL" => "boolean",
+                        "S" => "string",
+                        "SS" => [
+                            "string"
+                        ]
+                    }
+                ],
+                "ComparisonOperator" => "string"
+            }
+       },
+       "Segment" => "number",
+       "Select" => "string",
+       "TableName" => "string",
+       "TotalSegments" => "number"
     }
 
 
