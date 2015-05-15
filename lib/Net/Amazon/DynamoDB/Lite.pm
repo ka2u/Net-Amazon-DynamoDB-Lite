@@ -317,40 +317,6 @@ sub batch_write_item {
     my $res = $self->ua->request($req);
 }
 
-sub _type_for_value {
-    my $v = shift;
-    if(my $ref = reftype($v)) {
-        # An array maps to a sequence
-        if($ref eq 'ARRAY') {
-            my $flags = B::svref_2object(\$v)->FLAGS;
-            # Any refs mean we're sending binary data
-            return 'BS' if grep ref($_), @$v;
-            # Any stringified values => string data
-            return 'SS' if grep $_ & B::SVp_POK, map B::svref_2object(\$_)->FLAGS, @$v;
-            # Everything numeric? Send as a number
-            return 'NS' if @$v == grep $_ & (B::SVp_IOK | B::SVp_NOK), map B::svref_2object(\$_)->FLAGS, @$v;
-            # Default is a string sequence
-            return 'SS';
-        } else {
-            return 'B';
-        }
-    } else {
-        my $flags = B::svref_2object(\$v)->FLAGS;
-        return 'S' if $flags & B::SVp_POK;
-        return 'N' if $flags & (B::SVp_IOK | B::SVp_NOK);
-        return 'S';
-    }
-}
-
-sub _type_and_value {
-    my $v = shift;
-    my $type = _type_for_value($v);
-    return $type, "$v" unless my $ref = ref $v;
-    return $type, [ map "$_", @$v ] if $ref eq 'ARRAY';
-    return $type, { map {; $_ => ''.$v->{$_} } keys %$v } if $ref eq 'HASH';
-    return $type, "$v";
-}
-
 sub _except_type {
     my $v = shift;
     my $res;
