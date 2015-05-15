@@ -39,8 +39,61 @@ SKIP: {
         "TableName" => $table,
     });
     ok $create_res;
-    $dynamo->batch_write_item('PUT', {$table => [{id => "11111", last_update => "2015-03-30 18:41:23"}, {id => "22222", last_update => "2015-03-30 18:41:23"}, {id => "33333", last_update => "2015-03-30 18:41:23"}]});
-    my $res = $dynamo->batch_get_item({$table => [{"id" => "22222"}]});
+    $dynamo->batch_write_item(    {
+        "RequestItems" => {
+            $table => [
+                {
+                    "PutRequest" => {
+                        "Item" => {
+                            "id" => {
+                                "S" => "11111",
+                            },
+                            "last_update" => {
+                                "S" => "2015-03-30 18:41:23",
+                            },
+                        }
+                    }
+                },
+                {
+                    "PutRequest" => {
+                        "Item" => {
+                            "id" => {
+                                "S" => "22222",
+                            },
+                            "last_update" => {
+                                "S" => "2015-03-30 18:41:23",
+                            },
+                        }
+                    }
+                },
+                {
+                    "PutRequest" => {
+                        "Item" => {
+                            "id" => {
+                                "S" => "33333",
+                            },
+                            "last_update" => {
+                                "S" => "2015-03-30 18:41:23",
+                            },
+                        }
+                    }
+                }
+            ]
+        },
+    });
+    my $res = $dynamo->batch_get_item({
+        "RequestItems" => {
+            $table => {
+                "Keys" => [
+                    {
+                        "id" => {
+                            "S" => "22222",
+                        }
+                    }
+                ],
+            }
+        },
+    });
     is_deeply $res->[0]->{$table}, [
         {
             'last_update' => '2015-03-30 18:41:23',

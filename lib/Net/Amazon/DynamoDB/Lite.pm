@@ -310,33 +310,9 @@ sub batch_get_item {
 }
 
 sub batch_write_item {
-    my ($self, $mode, $request_items) = @_;
+    my ($self, $content) = @_;
 
-    my $content;
-    if ($mode eq 'PUT') {
-        for my $table (keys %{$request_items}) {
-            my $v = $request_items->{$table};
-            for my $l (@{$v}) {
-                my $put = {};
-                for my $key (keys %{$l}) {
-                    $put->{PutRequest}->{Item}->{$key} = {_type_and_value($l->{$key})};
-                }
-                push @{$content->{RequestItems}->{$table}}, $put;
-            }
-        }
-    } elsif ($mode eq 'DELETE') {
-        for my $table (keys %{$request_items}) {
-            my $v = $request_items->{$table};
-            for my $l (@{$v}) {
-                my $delete = {};
-                for my $key (keys %{$l}) {
-                    $delete->{DeleteRequest}->{Key}->{$key} = {_type_and_value($l->{$key})};
-                }
-                push @{$content->{RequestItems}->{$table}}, $delete;
-            }
-        }
-    }
-
+    Carp::croak "RequestItems required." unless $content->{RequestItems};
     my $req = $self->make_request('BatchWriteItem', $content);
     my $res = $self->ua->request($req);
 }
@@ -1227,6 +1203,70 @@ Net::Amazon::DynamoDB::Lite is ...
        "ReturnConsumedCapacity" => "string"
     }
 
+=head2 batch_write_item
+
+    {
+        "RequestItems" => {
+            "string" => [
+                {
+                    "DeleteRequest" => {
+                        "Key" => {
+                            "string" => {
+                                "B" => "blob",
+                                "BOOL" => "boolean",
+                                "BS" => [
+                                    "blob"
+                                ],
+                                "L" =< [
+                                    AttributeValue
+                                ],
+                                "M" => {
+                                    "string" => AttributeValue
+                                }
+                                "N" => "string",
+                                "NS" => [
+                                    "string"
+                                ],
+                                "NULL" => "boolean",
+                                "S" => "string",
+                                "SS" => [
+                                    "string"
+                                ]
+                            }
+                        }
+                    },
+                    "PutRequest" => {
+                        "Item" => {
+                            "string" => {
+                                "B" => "blob",
+                                "BOOL" => "boolean",
+                                "BS" => [
+                                    "blob"
+                                ],
+                                "L" => [
+                                    AttributeValue
+                                ],
+                                "M" => {
+                                    "string" => AttributeValue
+                                },
+                                "N" => "string",
+                                "NS" => [
+                                    "string"
+                                ],
+                                "NULL" => "boolean",
+                                "S" => "string",
+                                "SS" => [
+                                    "string"
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "ReturnConsumedCapacity" => "string",
+        "ReturnItemCollectionMetrics" => "string"
+    }
 
 
 =head1 LICENSE
