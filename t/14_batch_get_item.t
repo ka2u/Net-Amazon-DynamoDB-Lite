@@ -72,7 +72,19 @@ SKIP: {
         },
         "TableName" => $table
     });
-    my $res = $dynamo->batch_get_item({$table => [{"id" => "22222"}]});
+    my $res = $dynamo->batch_get_item({
+        "RequestItems" => {
+            $table => {
+                "Keys" => [
+                    {
+                        "id" => {
+                            "S" => "22222",
+                        }
+                    }
+                ],
+            }
+        },
+    });
     is_deeply $res->[0]->{$table}, [
         {
             'last_update' => '2015-03-30 18:41:23',

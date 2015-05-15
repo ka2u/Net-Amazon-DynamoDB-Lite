@@ -291,18 +291,9 @@ sub scan {
 }
 
 sub batch_get_item {
-    my ($self, $request_items) = @_;
+    my ($self, $content) = @_;
 
-    my $content;
-    foreach my $k (keys %{$request_items}) {
-        my $v = $request_items->{$k};
-        foreach my $l (@{$v}) {
-            my ($key) = keys %{$l};
-            push @{$content->{RequestItems}->{$k}->{Keys}},
-              { $key => {_type_and_value($l->{$key})} };
-        }
-    }
-
+    Carp::croak "RequestItems required." unless $content->{RequestItems};
     my $req = $self->make_request('BatchGetItem', $content);
     my $res = $self->ua->request($req);
     my $decoded = $self->json->decode($res->content);
@@ -1190,6 +1181,50 @@ Net::Amazon::DynamoDB::Lite is ...
        "Select" => "string",
        "TableName" => "string",
        "TotalSegments" => "number"
+    }
+
+=head2 batch_get_item
+
+    {
+        "RequestItems" => {
+            "string" => {
+                "AttributesToGet" => [
+                    "string"
+                ],
+                "ConsistentRead" => "boolean",
+                "ExpressionAttributeNames" => {
+                    "string" => "string"
+                },
+                "Keys" => [
+                    {
+                        "string" => {
+                            "B" => "blob",
+                            "BOOL" => "boolean",
+                            "BS" => [
+                                "blob"
+                            ],
+                            "L" => [
+                                AttributeValue
+                            ],
+                            "M" => {
+                                "string" => AttributeValue
+                            },
+                            "N" => "string",
+                            "NS" => [
+                                 "string"
+                            ],
+                            "NULL" => "boolean",
+                            "S" => "string",
+                            "SS" => [
+                                 "string"
+                            ]
+                        }
+                    }
+                ],
+                "ProjectionExpression" => "string"
+            }
+        },
+       "ReturnConsumedCapacity" => "string"
     }
 
 
