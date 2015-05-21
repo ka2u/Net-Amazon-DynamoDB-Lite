@@ -28,3 +28,8 @@ cover_db/
 MYMETA.*
 
 /Net-Amazon-DynamoDB-Lite-*
+/batch.pl
+/bench.pl
+/insert.pl
+/t/test
+/t/test2
