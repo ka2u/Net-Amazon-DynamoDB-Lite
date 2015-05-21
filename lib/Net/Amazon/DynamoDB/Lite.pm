@@ -369,26 +369,52 @@ __END__
 
 =head1 NAME
 
-Net::Amazon::DynamoDB::Lite - It's new $module
+Net::Amazon::DynamoDB::Lite - DynamoDB Client
 
 =head1 SYNOPSIS
 
     use Net::Amazon::DynamoDB::Lite;
 
+    my $dynamo = Amazon::DynamoDB::Lite->new(
+        region => 'ap-northeast-1',
+        access_key => 'XXXXX',
+        secret_key => 'YYYYY',
+    );
+    my $tables = $dynamo->list_tables;
+
 =head1 DESCRIPTION
 
-Net::Amazon::DynamoDB::Lite is ...
+Net::Amazon::DynamoDB::Lite is simple DynamoDB Client.
+It is really simple, fast, easy to use of the DynamoDB service.
+
+THIS IS A DEVELOPMENT RELEASE. API MAY CHANGE WITHOUT NOTICE.
 
 =head1 METHODS
 
 =head2 list_tables
+
+Returns an arrayref of table names associated with the current account and endpoint.
+
+=over 4
+
+=item * Request Data
 
     {
         "ExclusiveStartTableName" => "string",
         "Limit" => "number"
     }
 
+=item * SEE L<http://docs.aws.amazon.com/amazondynamodb/latest/APIReference//API_ListTables.html>
+
+=back
+
 =head2 put_item
+
+Creates a new item, or replaces an old item with a new item.
+
+=over 4
+
+=item * Request Data
 
     {
         "ConditionExpression" => "string",
@@ -502,7 +528,17 @@ Net::Amazon::DynamoDB::Lite is ...
         "TableName" => "string"
     }
 
+=item * SEE L<http://docs.aws.amazon.com/amazondynamodb/latest/APIReference//API_PutItem.html>
+
+=back
+
 =head2 get_item
+
+Returns a set of attributes for the item with the given primary key.
+
+=over 4
+
+=item * Request Data
 
     {
         "AttributesToGet" => [
@@ -541,7 +577,17 @@ Net::Amazon::DynamoDB::Lite is ...
         "TableName" => "string"
     }
 
+=item * SEE L<http://docs.aws.amazon.com/amazondynamodb/latest/APIReference//API_GetItem.html>
+
+=back
+
 =head2 update_item
+
+Edits an existing items attributes, or adds a new item to the table if it does not already exist.
+
+=over 4
+
+=item * Request Data
 
     {
         "AttributeUpdates" => {
@@ -683,7 +729,17 @@ Net::Amazon::DynamoDB::Lite is ...
         "UpdateExpression" => "string"
     }
 
+=item * SEE L<http://docs.aws.amazon.com/amazondynamodb/latest/APIReference//API_UpdateItem.html>
+
+=back
+
 =head2 delete_item
+
+Deletes a single item in a table by primary key.
+
+=over 4
+
+=item * Request Data
 
     {
         "ConditionExpression" => "string",
@@ -797,7 +853,17 @@ Net::Amazon::DynamoDB::Lite is ...
         "TableName" => "string"
     }
 
+=item * SEE L<http://docs.aws.amazon.com/amazondynamodb/latest/APIReference//API_DeleteItem.html>
+
+=back
+
 =head2 create_table
+
+Adds a new table to your account.
+
+=over 4
+
+=item * Request Data
 
     {
         "AttributeDefinitions" => [
@@ -857,19 +923,49 @@ Net::Amazon::DynamoDB::Lite is ...
         "TableName" => "string"
     }
 
+=item * SEE L<http://docs.aws.amazon.com/amazondynamodb/latest/APIReference//API_CreateTable.html>
+
+=back
+
 =head2 delete_table
+
+Deletes a table and all of its items.
+
+=over 4
+
+=item * Request Data
 
     {
         "TableName" => "string"
     }
+
+=item * SEE L<http://docs.aws.amazon.com/amazondynamodb/latest/APIReference//API_DeleteTable.html>
+
+=back
 
 =head2 describe_table
 
+Returns a information abount the table, including the current status of the table.
+
+=over 4
+
+=item * Request Data
+
     {
         "TableName" => "string"
     }
 
+=item * SEE L<http://docs.aws.amazon.com/amazondynamodb/latest/APIReference//API_DescribeTable.html>
+
+=back
+
 =head2 update_table
+
+Updates the provisioned throughput for the given table, or manages the global secondary indexes on the table.
+
+=over 4
+
+=item * Request Data
 
     {
         "AttributeDefinitions" => [
@@ -918,7 +1014,17 @@ Net::Amazon::DynamoDB::Lite is ...
         "TableName" => "string"
     }
 
+=item * SEE L<http://docs.aws.amazon.com/amazondynamodb/latest/APIReference//API_UpdateTable.html>
+
+=back
+
 =head2 query
+
+Uses the primary key of a table or a secondary index to directly access items from that table or index.
+
+=over 4
+
+=item * Request Data
 
     {
         "AttributesToGet" => [
@@ -1046,7 +1152,17 @@ Net::Amazon::DynamoDB::Lite is ...
         "TableName" => "string"
     }
 
+=item * SEE L<http://docs.aws.amazon.com/amazondynamodb/latest/APIReference//API_Query.html>
+
+=back
+
 =head2 scan
+
+Returns one or more items and item attributes by accessing every item in a table or a secondary index.
+
+=over 4
+
+=item * Request Data
 
     {
         "AttributesToGet" => [
@@ -1145,7 +1261,17 @@ Net::Amazon::DynamoDB::Lite is ...
        "TotalSegments" => "number"
     }
 
+=item * SEE L<http://docs.aws.amazon.com/amazondynamodb/latest/APIReference//API_Scan.html>
+
+=back
+
 =head2 batch_get_item
+
+Returns the attributes of one or more items from one or more tables.
+
+=over 4
+
+=item * Requset Data
 
     {
         "RequestItems" => {
@@ -1189,7 +1315,17 @@ Net::Amazon::DynamoDB::Lite is ...
        "ReturnConsumedCapacity" => "string"
     }
 
+=item * SEE L<http://docs.aws.amazon.com/amazondynamodb/latest/APIReference//API_BatchGetItem.html>
+
+=back
+
 =head2 batch_write_item
+
+Puts or Deletes multiple items in one or more tables.
+
+=over 4
+
+=item * Request Data
 
     {
         "RequestItems" => {
@@ -1199,7 +1335,7 @@ Net::Amazon::DynamoDB::Lite is ...
                         "Key" => {
                             "string" => {
                                 "B" => "blob",
-                                "BOOL" => "boolean",
+                               "BOOL" => "boolean",
                                 "BS" => [
                                     "blob"
                                 ],
@@ -1254,6 +1390,9 @@ Net::Amazon::DynamoDB::Lite is ...
         "ReturnItemCollectionMetrics" => "string"
     }
 
+=item * SEE L<http://docs.aws.amazon.com/amazondynamodb/latest/APIReference//API_BatchWriteItem.html>
+
+=back
 
 =head1 LICENSE
 
