@@ -2,6 +2,10 @@ Revision history for Perl extension Net-Amazon-DynamoDB-Lite
 
 {{$NEXT}}
 
+    - Fix error message
+    - Fix document
+    - Fix warning at perl 5.22.0
+
 0.01 2015-05-21T10:03:37Z
 
     - original version
