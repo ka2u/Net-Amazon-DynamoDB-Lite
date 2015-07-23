@@ -920,7 +920,7 @@ Puts or Deletes multiple items in one or more tables.
                                     "BS" => [
                                         "blob"
                                     ],
-                                    "L" =< [
+                                    "L" => [
                                         AttributeValue
                                     ],
                                     "M" => {
