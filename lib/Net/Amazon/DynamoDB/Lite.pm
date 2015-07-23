@@ -356,9 +356,10 @@ sub _except_type {
 sub _error_content {
     my ($self, $res, $decoded) = @_;
 
+    my $message = $decoded->{Message} ? $decoded->{Message} : $decoded->{message};
     return  "status_code : " . $res->status_line
       . " __type : " . $decoded->{__type}
-      . " message : " . $decoded->{Message};
+      . " message : " . $message;
 }
 
 
