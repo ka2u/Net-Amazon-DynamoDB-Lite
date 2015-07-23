@@ -70,7 +70,7 @@
          "web" : "https://github.com/ka2u/Net-Amazon-DynamoDB-Lite"
       }
    },
-   "version" : "0.01",
+   "version" : "0.02",
    "x_contributors" : [
       "Kazuhiro Shibuya <shibuya@fout.jp>"
    ]
