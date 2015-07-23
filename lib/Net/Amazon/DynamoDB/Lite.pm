@@ -306,7 +306,7 @@ sub batch_get_item {
     my $decoded = $self->json->decode($res->content);
     if ($res->is_success) {
         my $res;
-        for my $k (keys $decoded->{Responses}) {
+        for my $k (keys %{$decoded->{Responses}}) {
             push @{$res}, {$k => _except_type($decoded->{Responses}->{$k})};
         }
         return $res;
