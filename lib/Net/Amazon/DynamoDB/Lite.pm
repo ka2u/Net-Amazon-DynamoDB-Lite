@@ -92,7 +92,7 @@ sub _build_ua {
     my ($self) = @_;
 
     my $ua = Furl->new(
-        agent => 'Net::Amazon::DynamoDB::Lite v0.01',
+        agent => 'Net::Amazon::DynamoDB::Lite ' . $VERSION,
         timeout => $self->connection_timeout,
         ssl_opts => {
             SSL_ca_path => $self->ca_path,
