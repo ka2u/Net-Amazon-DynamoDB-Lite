@@ -2,6 +2,11 @@ Revision history for Perl extension Net-Amazon-DynamoDB-Lite
 
 {{$NEXT}}
 
+0.03 2015-10-02T06:09:54Z
+
+    - Use $VERSION in user-agent string
+    - release non trial
+
 0.02 2015-07-23T10:12:05Z
 
     - Fix error message
