@@ -334,23 +334,40 @@ sub _except_type {
     my $v = shift;
     my $res;
     if (ref $v eq 'HASH') {
-        for my $k (keys %{$v}) {
-            my $with_type = $v->{$k};
-            my ($k2) = keys %{$with_type};
-            $res->{$k} = $with_type->{$k2};
+        for my $key (keys %{$v}) {
+            my $value = $v->{$key};
+            $res->{$key} = _rm_type($value);
         }
     } elsif (ref $v eq 'ARRAY') {
         for my $w (@{$v}) {
-            my $with_out_type;
-            for my $k (keys %{$w}) {
-                my $with_type = $w->{$k};
-                my ($k2) = keys %{$with_type};
-                $with_out_type->{$k} = $with_type->{$k2};
-            }
-            push @{$res}, $with_out_type;
+            push @{$res}, _except_type($w);
         }
     }
     return $res;
+}
+
+sub _rm_type {
+    my $v = shift;
+    my ($type, $value) = %$v;
+    my $res;
+    if ($type eq 'L') {
+        for my $i (@$value) {
+            push @$res, _rm_type($i);
+        }
+        return $res;
+    }
+    elsif ($type eq 'M') {
+        for my $i (keys %$value) {
+            $res->{$i} = _rm_type($value->{$i});
+        }
+        return $res;
+    }
+    elsif ($type eq 'B') {
+        return MIME::Base64::decode_base64($value);
+    }
+    else {
+        return $value;
+    }
 }
 
 sub _error_content {
