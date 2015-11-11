@@ -1413,6 +1413,10 @@ Puts or Deletes multiple items in one or more tables.
 
 =back
 
+=head1 CONTRIBUTORS
+
+kablamo
+
 =head1 LICENSE
 
 Copyright (C) Kazuhiro Shibuya.
