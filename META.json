@@ -45,6 +45,7 @@
             "Furl" : "3.07",
             "HTTP::Message" : "6.06",
             "JSON" : "2.90",
+            "MIME::Base64" : "3.15",
             "Moo" : "2.000001",
             "Pod::Markdown" : "2.002",
             "Scalar::Util" : "1.42",
@@ -70,8 +71,9 @@
          "web" : "https://github.com/ka2u/Net-Amazon-DynamoDB-Lite"
       }
    },
-   "version" : "0.03",
+   "version" : "0.04",
    "x_contributors" : [
+      "Eric Johnson <eric.git@iijo.org>",
       "Kazuhiro Shibuya <shibuya@fout.jp>"
    ]
 }

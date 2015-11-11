@@ -973,6 +973,10 @@ Puts or Deletes multiple items in one or more tables.
 
 - SEE [http://docs.aws.amazon.com/amazondynamodb/latest/APIReference//API\_BatchWriteItem.html](http://docs.aws.amazon.com/amazondynamodb/latest/APIReference//API_BatchWriteItem.html)
 
+# CONTRIBUTORS
+
+kablamo
+
 # LICENSE
 
 Copyright (C) Kazuhiro Shibuya.
