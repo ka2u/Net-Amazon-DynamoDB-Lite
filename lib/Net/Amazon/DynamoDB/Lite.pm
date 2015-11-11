@@ -9,6 +9,7 @@ use Carp;
 use Furl;
 use HTTP::Request;
 use JSON;
+use MIME::Base64;
 use Moo;
 use POSIX qw(setlocale LC_TIME strftime);
 use Scalar::Util qw(reftype);
