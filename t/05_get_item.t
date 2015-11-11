@@ -72,6 +72,45 @@ SKIP: {
         'last_update' => '2015-03-31 10:24:00',
         'id' => '99999999',
     };
+    $dynamo->put_item({
+        "Item" => {
+            'id' => { S => "11111111" },
+            'a'  => { N => "1"        },
+            'b'  => { S => "pants"    },
+            'c'  => { N => "23.5"     },
+            'e'  => {
+                'M' => {
+                    'a' => { 'N' => "23.5"  },
+                    'b' => { 'S' => "pants" },
+                },
+            },
+            'f'  => { 
+                'L' => [ 
+                    { 'S' => "pants" },
+                    { 'N' => "23.5"  },
+                ],
+            },
+            'g'  => { 'S' => "23" },
+        },
+        "TableName" => $table
+    });
+    my $res = $dynamo->get_item({
+        "Key" => {
+            id => {
+                "S" => "11111111",
+            }
+        },
+        "TableName" => $table
+    });
+    is_deeply $res, {
+        'id' => '11111111',
+        'a'  => 1,
+        'b'  => "pants",
+        'c'  => 23.5,
+        'e'  => { a => 23.5, b => "pants" },
+        'f'  => [ "pants", 23.5 ],
+        'g'  => "23",
+    };
     $dynamo->delete_table({TableName => $table});
 }
 
