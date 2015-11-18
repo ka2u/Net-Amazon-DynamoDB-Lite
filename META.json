@@ -71,7 +71,7 @@
          "web" : "https://github.com/ka2u/Net-Amazon-DynamoDB-Lite"
       }
    },
-   "version" : "0.04",
+   "version" : "0.05",
    "x_contributors" : [
       "Eric Johnson <eric.git@iijo.org>",
       "Kazuhiro Shibuya <shibuya@fout.jp>"
